@@ -49,7 +49,7 @@ nlp_interpretability/
 ### Dataset
 - **Source**: IMDB Movie Review Dataset (50,000 reviews)
 - **Task**: Binary sentiment classification (positive/negative)
-- **Split**: 75% train, 12.5% validation, 12.5% test for comprehensive evaluation
+- **Split**: 87.5% train, 12.5% validation
 - **Preprocessing**: BERT tokenization with 256 max sequence length
 
 ### Models Tested
