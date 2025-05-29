@@ -5,8 +5,7 @@ shap
 pandas
 scikit-learn
 matplotlib
-# For downloading large assets from cloud storage
-gdown>=4.6.0
-huggingface_hub>=0.16.0
-requests>=2.28.0
-tqdm>=4.64.0 
+numpy
+tqdm
+seaborn
+plotly
