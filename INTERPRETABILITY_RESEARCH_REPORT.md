@@ -49,7 +49,7 @@ SHAP (SHapley Additive exPlanations) has emerged as a popular method for explain
 ### 4.1 Dataset and Preprocessing
 - **Dataset:** IMDB Movie Review Dataset (50,000 reviews)
 - **Preprocessing:** Standard BERT tokenization with 256 max sequence length
-- **Train/Validation Split:** 80/20 split for overfitting detection
+- **Data Split:** 87.5% train, 12.5% validation
 
 ### 4.2 Model Architecture and Training
 We implement two BERT-based approaches:
@@ -61,10 +61,13 @@ We implement two BERT-based approaches:
 - **Explanation Scope:** Token-level attributions for individual predictions
 - **Consistency Metrics:** Cross-validation of explanations on similar examples
 
-### 4.4 Evaluation Metrics
+### 4.4 Evaluation Metrics and Visualizations
 - **Model Performance:** Accuracy, F1-score, precision, recall
-- **Overfitting Detection:** Train-validation accuracy gap
+- **Overfitting Detection:** Train-validation accuracy gap analysis
+- **Learning Curve Analysis:** Training and validation loss/accuracy curves for both models
+- **Confusion Matrix:** Detailed classification performance visualization for both models
 - **Explanation Quality:** Linguistic plausibility scores, attribution consistency
+
 
 ## 5. Results and Analysis
 
@@ -77,12 +80,46 @@ Our experimental results reveal a clear relationship between model overfitting a
 - Validation Accuracy: 85%
 - Overfitting Gap: 2%
 
+
+
 **Fine-tuned BERT Model:**
 - Training Accuracy: ~98.5%
 - Validation Accuracy: 93%
 - Overfitting Gap: 5.5%
 
 Both models demonstrated overfitting behavior, with the fine-tuned model achieving higher overall performance but maintaining a similar generalization gap.
+
+### 5.1.1 Learning Curve and Confusion Matrix Analysis
+
+**Learning Curve Observations:**
+- Both baseline and fine-tuned BERT models show clear evidence of overfitting through diverging training and validation curves
+- The fine-tuned model exhibits more pronounced overfitting with a steeper increase in the training-validation performance gap
+- Loss curves confirm the overfitting pattern with validation increasing while training loss continues to decrease
+
+<div align="center">
+<img src="/learning_curve.png" alt="Baseline BERT Learning Curves" width="600"/>
+<p><i>Figure 1: Learning curves for baseline BERT model showing training and validation accuracy/loss over epochs</i></p>
+</div>
+
+<div align="center">
+<img src="learning_curve_fine_tuned.png" alt="Fine-tuned BERT Learning Curves" width="600"/>
+<p><i>Figure 2: Learning curves for fine-tuned BERT model demonstrating pronounced overfitting behavior</i></p>
+</div>
+
+**Confusion Matrix Results:**
+- Detailed confusion matrices for both models reveal classification performance across positive and negative sentiment classes
+- Fine-tuned BERT shows improved overall classification accuracy but similar patterns in misclassification types
+- Both models maintain consistent classification patterns despite different overfitting levels
+
+<div align="center">
+<img src="confusion_matrix_original.png" alt="Baseline BERT Confusion Matrix" width="400"/>
+<p><i>Figure 3: Confusion matrix for baseline BERT model on test set</i></p>
+</div>
+
+<div align="center">
+<img src="confusion_matrix_fine_tuned.png" alt="Fine-tuned BERT Confusion Matrix" width="400"/>
+<p><i>Figure 4: Confusion matrix for fine-tuned BERT model on test set</i></p>
+</div>
 
 ### 5.2 SHAP Explanation Analysis
 
