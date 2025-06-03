@@ -5,6 +5,21 @@ ENV/
 .venv/
 .env/
 
+# Data files
+data/
+downloaded_file*
+bert_embeddings.npy
+bert_sentiment_finetuned/
+*.csv
+*.json
+*.pkl
+*.h5
+*.hdf5
+*.parquet
+*.zip
+*.tar.gz
+*.dataset
+
 # Python
 __pycache__/
 *.py[cod]
