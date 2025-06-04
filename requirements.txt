@@ -12,3 +12,4 @@ jupyter>=1.0.0
 ipywidgets>=7.7.0
 vaderSentiment>=3.3.2
 gdown>=4.7.0
+kagglehub
