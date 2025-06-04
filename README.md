@@ -80,4 +80,4 @@ nlp_interpretability/
 
 
 ### Video Link
-[Video Link](https://drive.google.com/file/d/1-_0000000000000000000000000000000000000000/view?usp=sharing)
+[Video Link](https://youtu.be/3ZeD96XtrM8?si=Ct446CiRklpbxh7W)
