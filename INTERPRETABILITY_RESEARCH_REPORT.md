@@ -1,8 +1,8 @@
 # SHAP-Based Interpretability Analysis for BERT Sentiment Classification: A Comparative Study on Robustness and Faithfulness
 
-**Author:** [Your Name]  
+**Author:** Felipe Martins da Costa Drummond
 **Course:** Natural Language Processing  
-**Date:** [Current Date]
+**Date:** 04/06/2025
 
 ## Abstract
 
