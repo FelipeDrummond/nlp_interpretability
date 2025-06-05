@@ -35,36 +35,32 @@ SHAP (SHapley Additive exPlanations) has emerged as a popular method for explain
 
 **Lundberg & Lee (2017)** introduced SHAP as a unified framework for interpreting model predictions, providing theoretical guarantees through Shapley values from cooperative game theory. Their approach offers consistency and efficiency properties that make it attractive for explaining complex models.
 
-**Ribeiro et al. (2016)** developed LIME (Local Interpretable Model-agnostic Explanations), which inspired many subsequent interpretability methods. While LIME focuses on local explanations around individual predictions, SHAP provides global consistency properties that make it more suitable for systematic analysis.
-
-### 3.2 BERT and Transformer Interpretability
-
 **Rogers et al. (2020)** provide a comprehensive survey of BERT interpretability research, highlighting that attention weights do not necessarily correlate with feature importance. This finding motivates the use of gradient-based methods like SHAP for more reliable explanations.
 
 **Clark et al. (2019)** analyzed BERT's attention patterns and found that different heads learn different types of linguistic relationships. However, their work focused on attention mechanisms rather than post-hoc explanation methods, leaving questions about feature attribution reliability unaddressed.
 
-**Tenney et al. (2019)** used probing tasks to understand what linguistic knowledge BERT learns at different layers. While informative, their analysis doesn't address how model overfitting affects the reliability of explanations for end-users.
-
-### 3.3 Overfitting and Explanation Reliability
+### 3.2 Overfitting and Explanation Reliability
 
 **Adebayo et al. (2018)** question the reliability of gradient-based explanations, showing that some methods produce similar explanations for trained and random models. This seminal work motivates our investigation into how model quality affects explanation trustworthiness, but focuses on computer vision tasks rather than NLP.
 
-**Slack et al. (2020)** demonstrated that explanation methods can be fooled by adversarial examples, highlighting the fragility of interpretability techniques. Their work suggests that explanation reliability is a broader concern beyond just model architecture.
-
 **Bastings & Filippova (2020)** investigated the relationship between model confidence and explanation quality in NLP, finding that overconfident models often produce less reliable explanations. This aligns with our hypothesis that overfitted models (which are typically overconfident) may produce unreliable SHAP attributions.
 
-### 3.4 Research Gap and Contribution
+### 3.3 Research Gap and Contribution
 
 Despite extensive work on both BERT interpretability and explanation reliability, **no prior study has systematically investigated how model overfitting specifically affects SHAP explanation quality in NLP tasks**. Previous work has either:
 
 1. **Focused on attention mechanisms** (Clark et al., 2019; Tenney et al., 2019) rather than post-hoc explanations
 2. **Examined computer vision tasks** (Adebayo et al., 2018) rather than NLP applications  
 3. **Studied different explanation methods** (Bastings & Filippova, 2020) without focusing on SHAP
-4. **Analyzed explanation robustness** (Slack et al., 2020) without connecting to overfitting
 
-Our work fills this critical gap by providing **the first systematic empirical analysis of overfitting's impact on SHAP explanations in BERT-based sentiment classification**, with direct implications for trustworthy AI deployment in NLP applications.
+Our work fills this critical gap by providing **the first systematic empirical analysis of overfitting's impact on SHAP explanations in BERT-based sentiment classification**. Our contributions include:
 
-### 3.5 Positioning Within Broader Context
+1. **Systematic overfitting-explanation correlation study**: First empirical investigation connecting model generalization gaps to explanation quality degradation
+2. **Comprehensive evaluation framework**: Multi-metric assessment combining sentiment alignment, attribution focus, and explanation consistency
+3. **Quantitative evidence**: Concrete numerical demonstration that high accuracy does not guarantee explanation reliability
+4. **Practical implications**: Actionable framework for evaluating explanation trustworthiness in production NLP systems
+
+### 3.4 Positioning Within Broader Context
 
 This research contributes to the growing field of **trustworthy AI** by demonstrating that high model performance alone is insufficient for reliable explanations. Our findings complement recent work on:
 
@@ -98,10 +94,10 @@ We implement two BERT-based approaches:
 
 ### 4.5 Quantitative Explanation Quality Metrics
 
-To provide rigorous evaluation of explanation reliability, we introduce several quantitative metrics:
+To provide rigorous evaluation of explanation reliability, we employ three complementary metrics that together provide a comprehensive assessment of explanation quality:
 
 #### 4.5.1 Sentiment-Attribution Alignment Score (SAAS)
-We define a metric to quantify how well SHAP attributions align with expected sentiment polarity:
+We measure how well SHAP attributions align with expected sentiment polarity:
 
 ```
 SAAS = (1/N) * Σ sign(SHAP_score) * sentiment_polarity(word)
@@ -112,28 +108,28 @@ Where:
 - `sentiment_polarity(word)` is +1 for positive words, -1 for negative words (using VADER lexicon)
 - N is the number of words with known sentiment polarity
 
-Higher SAAS scores indicate better alignment between attributions and linguistic intuition.
+This metric evaluates whether attributions align with basic linguistic sentiment expectations.
 
-#### 4.5.2 Explanation Consistency Index (ECI)
-For similar inputs, explanations should be consistent. We measure this using:
-
-```
-ECI = 1 - (1/K) * Σ ||SHAP_i - SHAP_j||_2 / ||SHAP_i||_2
-```
-
-Where SHAP_i and SHAP_j are explanations for similar examples (cosine similarity > 0.8).
-
-#### 4.5.3 Attribution Entropy (AE)
-Well-calibrated explanations should concentrate attribution on fewer, more meaningful tokens:
+#### 4.5.2 Attribution Entropy (AE)
+Following established practice in interpretability research, we measure explanation focus using Shannon entropy:
 
 ```
 AE = -Σ p_i * log(p_i)
 ```
 
-Where p_i is the normalized absolute SHAP value for token i. Lower entropy indicates more focused explanations.
+Where p_i is the normalized absolute SHAP value for token i. Lower entropy indicates more focused explanations, higher entropy indicates scattered attributions.
 
-#### 4.5.4 Overfitting-Explanation Correlation (OEC)
-We measure the correlation between model overfitting (train-val accuracy gap) and explanation quality metrics to quantify the relationship we observe qualitatively.
+#### 4.5.3 Explanation Consistency Index (ECI)
+We measure explanation stability across similar inputs:
+
+```
+ECI = 1 - (1/K) * Σ ||SHAP_i - SHAP_j||_2 / ||SHAP_i||_2
+```
+
+Where SHAP_i and SHAP_j are explanations for similar examples (cosine similarity > 0.8). This measures whether similar texts receive consistent explanations.
+
+#### 4.5.4 Overfitting-Explanation Correlation Analysis
+We systematically apply these metrics to study the relationship between model overfitting and explanation quality in BERT-based sentiment classification.
 
 ## 5. Results and Analysis
 
@@ -292,12 +288,9 @@ This study demonstrates that **overfitting poses a significant threat to the rel
 
 ### 7.1 Quantitative Evidence of Explanation Degradation
 
-Our novel quantitative metrics provide unprecedented empirical evidence of how overfitting degrades explanation quality:
-
 - **Sentiment-Attribution Alignment Score (SAAS): -0.1096** - The negative score demonstrates that SHAP attributions are **anti-correlated** with expected sentiment polarity, contradicting linguistic intuition
 - **Attribution Entropy (AE): 4.28** - The high entropy reveals **severely scattered and unfocused** explanations across all analyzed instances
 - **Explanation Consistency Index (ECI): 0.0000** - The zero score indicates **complete inconsistency** in explanations for similar inputs
-- **Overfitting Correlation: 2.7x increase** - Models with larger overfitting gaps show proportionally degraded explanation quality
 
 ### 7.2 Implications for Interpretable AI
 
@@ -306,23 +299,6 @@ The counterintuitive attribution of positive sentiment to words like "forgotten"
 1. **High accuracy does not guarantee explanation quality** - Models can achieve 93% accuracy while producing completely unreliable explanations
 2. **Overfitting creates systematic explanation bias** - The negative SAAS score shows explanations systematically contradict expected patterns
 3. **Explanation consistency deteriorates with overfitting** - Zero ECI scores demonstrate unstable explanation patterns
-
-### 7.3 Novel Contributions
-
-**Key Contributions:**
-1. **First systematic quantitative analysis** of overfitting's impact on SHAP explanation reliability in NLP
-2. **Novel explanation quality metrics** (SAAS, AE, ECI) providing rigorous evaluation framework
-3. **Empirical demonstration** that explanation quality is independent of model performance
-4. **Practical framework** for evaluating explanation trustworthiness in production systems
-
-### 7.4 Recommendations for Practice
-
-Based on our quantitative analysis, we recommend:
-
-1. **Dual Evaluation Approach**: Evaluate both model performance AND explanation quality metrics before deployment
-2. **Regularization Priority**: Prioritize model generalization over accuracy maximization in interpretable AI applications
-3. **Explanation Quality Monitoring**: Implement SAAS, AE, and ECI metrics for ongoing explanation quality assessment
-4. **Cross-validation of Explanations**: Verify explanation consistency across similar inputs using ECI measurements
 
 This work emphasizes that in interpretable AI applications, **model generalization and explanation quality must be evaluated together** to ensure trustworthy and reliable AI systems. The quantitative framework we introduce provides practitioners with concrete metrics to assess explanation reliability beyond subjective evaluation.
 
